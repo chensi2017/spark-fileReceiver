@@ -1,0 +1,61 @@
+group 'com.htiiot.loganalysis'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'idea'
+apply plugin: 'scala'
+apply plugin: 'java'
+
+task "createDirs" << {
+    sourceSets*.scala.srcDirs*.each { it.mkdirs() }
+    sourceSets*.resources.srcDirs*.each { it.mkdirs() }
+}
+
+tasks.withType(JavaCompile){
+    options.encoding = "UTF-8"
+}
+
+sourceSets {
+    main {
+        scala {
+            srcDirs = ['src/main/scala']
+        }
+    }
+}
+
+sourceCompatibility = 1.7
+
+
+jar {
+    zip64  true
+//    [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }}
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
+    manifest {
+        attributes(
+                "Manifest-Version": 1.0,
+                "Main-Class": 'com.iiot.Test')
+    }
+}
+
+
+repositories{
+    maven { url 'http://124.207.207.21:62125/repository/maven-central/' }
+    maven { url 'http://124.207.207.21:62125/repository/maven-snapshots/' }
+    maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+    maven { url "http://repo.maven.apache.org/maven2" }
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies{
+    compile group: 'com.alibaba', name: 'fastjson', version:'1.2.31'
+    compile group: 'com.esotericsoftware', name: 'kryo', version: '4.0.0'
+    compile group: 'com.alibaba', name: 'fastjson', version: '1.2.24'
+    compile group: 'redis.clients', name: 'jedis', version:'2.9.0'
+    compile (group: 'org.apache.spark', name: 'spark-core_2.10', version:'2.1.0')
+    compile (group: 'org.apache.spark', name: 'spark-streaming_2.10', version:'2.1.0')
+    compile (group: 'org.apache.spark', name: 'spark-streaming-kafka_2.10', version:'1.6.3')
+    compile group: 'org.apache.hadoop', name: 'hadoop-client', version:'2.6.0'
+    compile group: 'org.apache.hama', name: 'hama-core', version: '0.7.1'
+//    compile group: 'redis.clients', name: 'jedis', version:'2.9.0'
+}

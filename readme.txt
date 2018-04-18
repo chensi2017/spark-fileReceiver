@@ -1,0 +1,3 @@
+本项目着重与sparkStreaming自定义的Receiver的开发
+1.FileReceiver
+    该接收器可以监控某一文件实时增加的内容作为sparkStreaming的数据输入源
